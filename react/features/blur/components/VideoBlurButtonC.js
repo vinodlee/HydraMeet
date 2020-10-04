@@ -6,16 +6,16 @@ import { createVideoBlurEvent, sendAnalytics } from '../../analytics';
 import { translate } from '../../base/i18n';
 import { IconBlurBackground } from '../../base/icons';
 import { connect } from '../../base/redux';
-import { AbstractButton, BetaTag } from '../../base/toolbox';
-import type { AbstractButtonProps } from '../../base/toolbox';
+import { AbstractButtonCopy, BetaTag } from '../../base/toolbox';
+import type { AbstractButtonCopyProps } from '../../base/toolbox';
 import { toggleBlurEffect } from '../actions';
 
-let ImagePathHandleClickToMap = 'NoBackGroundImage';
+let dataFromHandleClickToMap = 'NoBackGroundImage';
 
 /**
  * The type of the React {@code Component} props of {@link VideoBlurButton}.
  */
-type Props = AbstractButtonProps & {
+type Props = AbstractButtonCopyProps & {
 
     /**
      * True if the video background is blurred or false if it is not.
@@ -34,12 +34,12 @@ type Props = AbstractButtonProps & {
 /**
  * An abstract implementation of a button that toggles the video blur effect.
  */
-class VideoBlurButton extends AbstractButton<Props, *> {
+class VideoBlurButtonC extends AbstractButtonCopy<Props, *> {
     accessibilityLabel = 'toolbar.accessibilityLabel.videoblur';
     icon = IconBlurBackground;
-    label = 'toolbar.startvideoblur';
-    tooltip = 'toolbar.startvideoblur';
-    toggledLabel = 'toolbar.stopvideoblur';
+    label = 'Apply';
+    tooltip = '';
+    toggledLabel = 'Disable';
 
     /**
      * Helper function to be implemented by subclasses, which returns
@@ -63,7 +63,9 @@ class VideoBlurButton extends AbstractButton<Props, *> {
     _handleClick() {
         const { _isVideoBlurred, dispatch, ImageName, ImagePath } = this.props;
         const value = !_isVideoBlurred;
-        ImagePathHandleClickToMap = ImagePath;
+
+        dataFromHandleClickToMap = ImagePath;
+
         sendAnalytics(createVideoBlurEvent(value ? 'started' : 'stopped'));
         dispatch(toggleBlurEffect(value, ImagePath));
     }
@@ -91,15 +93,12 @@ class VideoBlurButton extends AbstractButton<Props, *> {
  *     _isVideoBlurred: boolean
  * }}
  */
-
-
-
 function _mapStateToProps(state): Object {
     return {
         _isVideoBlurred: Boolean(state['features/blur'].blurEnabled),
-        ImageName: ImagePathHandleClickToMap
+        ImageName: dataFromHandleClickToMap
     };
 }
 
 
-export default translate(connect(_mapStateToProps)(VideoBlurButton));
+export default translate(connect(_mapStateToProps)(VideoBlurButtonC));

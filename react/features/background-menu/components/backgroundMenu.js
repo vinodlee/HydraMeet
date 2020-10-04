@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 
 import { createVideoBlurEvent, sendAnalytics } from '../../analytics';
@@ -8,9 +6,7 @@ import { IconBlurBackground } from '../../base/icons';
 import { connect } from '../../base/redux';
 import { AbstractButton, BetaTag } from '../../base/toolbox';
 import type { AbstractButtonProps } from '../../base/toolbox';
-import { toggleBlurEffect } from '../actions';
-
-let ImagePathHandleClickToMap = 'NoBackGroundImage';
+import { toggleBlurEffectC } from '../actions';
 
 /**
  * The type of the React {@code Component} props of {@link VideoBlurButton}.
@@ -34,7 +30,7 @@ type Props = AbstractButtonProps & {
 /**
  * An abstract implementation of a button that toggles the video blur effect.
  */
-class VideoBlurButton extends AbstractButton<Props, *> {
+class VideoBlurButtonC extends AbstractButton<Props, *> {
     accessibilityLabel = 'toolbar.accessibilityLabel.videoblur';
     icon = IconBlurBackground;
     label = 'toolbar.startvideoblur';
@@ -61,11 +57,10 @@ class VideoBlurButton extends AbstractButton<Props, *> {
      * @returns {void}
      */
     _handleClick() {
-        const { _isVideoBlurred, dispatch, ImageName, ImagePath } = this.props;
+        const { _isVideoBlurred, dispatch, ImageName } = this.props;
         const value = !_isVideoBlurred;
-        ImagePathHandleClickToMap = ImagePath;
         sendAnalytics(createVideoBlurEvent(value ? 'started' : 'stopped'));
-        dispatch(toggleBlurEffect(value, ImagePath));
+        dispatch(toggleBlurEffect(value, ImageName));
     }
 
     /**
@@ -91,15 +86,11 @@ class VideoBlurButton extends AbstractButton<Props, *> {
  *     _isVideoBlurred: boolean
  * }}
  */
-
-
-
 function _mapStateToProps(state): Object {
     return {
         _isVideoBlurred: Boolean(state['features/blur'].blurEnabled),
-        ImageName: ImagePathHandleClickToMap
+        ImageName: 'ThisIsTest'
     };
 }
 
-
-export default translate(connect(_mapStateToProps)(VideoBlurButton));
+export default translate(connect(_mapStateToProps)(VideoBlurButtonC));

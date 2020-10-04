@@ -10,11 +10,10 @@ import JitsiStreamBlurEffect from './JitsiStreamBlurEffect';
  *
  * @returns {Promise<JitsiStreamBlurEffect>}
  */
-export async function createBlurEffect() {
+export async function createBlurEffect(name: String) {
     if (!MediaStreamTrack.prototype.getSettings && !MediaStreamTrack.prototype.getConstraints) {
         throw new Error('JitsiStreamBlurEffect not supported!');
     }
-
     // An output stride of 16 and a multiplier of 0.5 are used for improved
     // performance on a larger range of CPUs.
     const bpModel = await bodyPix.load({
@@ -24,5 +23,5 @@ export async function createBlurEffect() {
         quantBytes: 2
     });
 
-    return new JitsiStreamBlurEffect(bpModel);
+    return new JitsiStreamBlurEffect(bpModel, name);
 }

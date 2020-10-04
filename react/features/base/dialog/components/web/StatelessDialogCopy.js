@@ -129,13 +129,13 @@ class StatelessDialog extends Component<Props> {
                 components={{
                     Header: customHeader
                 }}
-                footer={this._renderFooter}
+                // footer={this._renderFooter}
                 heading={customHeader ? undefined : titleString || t(titleKey)}
                 i18n={this.props.i18n}
                 onClose={this._onDialogDismissed}
                 onDialogDismissed={this._onDialogDismissed}
                 shouldCloseOnEscapePress={true}
-                width={width || 'medium'}>
+                width={width || 'small'}>
                 <div
                     onKeyDown={this._onKeyDown}
                     ref={this._setDialogElement}>
@@ -273,16 +273,18 @@ class StatelessDialog extends Component<Props> {
         } = this.props;
 
         return (
-            <Button
-                appearance='primary'
-                form='modal-dialog-form'
-                id={OK_BUTTON_ID}
-                isDisabled={this.props.okDisabled}
-                key='submit'
-                onClick={this._onSubmit}
-                type='button'>
-                {t(this.props.okKey || 'dialog.Ok')}
-            </Button>
+            <div>
+                {/* <Button
+                    appearance='primary'
+                    form='modal-dialog-form'
+                    id={OK_BUTTON_ID}
+                    isDisabled={this.props.okDisabled}
+                    key='submit'
+                    onClick={this._onSubmit}
+                    type='button'>
+                    {t(this.props.okKey || 'dialog.Ok')}
+                </Button> */}
+            </div>
         );
     }
 

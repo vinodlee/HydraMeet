@@ -1,6 +1,7 @@
 // @flow
 
 import * as bodyPix from '@tensorflow-models/body-pix';
+import * as Util from './util';
 
 import {
     CLEAR_INTERVAL,
@@ -33,8 +34,9 @@ export default class JitsiStreamBlurEffect {
      * @class
      * @param {BodyPix} bpModel - BodyPix model.
      */
-    constructor(bpModel: Object) {
+    constructor(bpModel: Object, myName: String) {
         this._bpModel = bpModel;
+        this._myName = myName;
 
         // Bind event handler so it is only bound once for every instance.
         this._onMaskFrameTimer = this._onMaskFrameTimer.bind(this);
@@ -77,13 +79,41 @@ export default class JitsiStreamBlurEffect {
             segmentationThreshold: 0.7 // represents probability that a pixel belongs to a person
         });
         this._maskInProgress = false;
-        bodyPix.drawBokehEffect(
-            this._outputCanvasElement,
-            this._inputVideoElement,
-            this._segmentationData,
-            12, // Constant for background blur, integer values between 0-20
-            7 // Constant for edge blur, integer values between 0-20
-        );
+        if (this._myName == "NoBackGroundImage") {
+            bodyPix.drawBokehEffect(
+                this._outputCanvasElement,
+                this._inputVideoElement,
+                this._segmentationData,
+                12, // Constant for background blur, integer values between 0-20
+                7 // Constant for edge blur, integer values between 0-20
+            );
+        } else {
+            var img = new Image();
+            img._outputCanvasElement = this._outputCanvasElement;
+            img._inputVideoElement = this._inputVideoElement;
+            img._segmentationData = this._segmentationData;
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.height = this._inputVideoElement.height;
+            canvas.width = this._inputVideoElement.width;
+            img.onload = function () {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                let image = new Image();
+                image.src = canvas.toDataURL();
+
+                if (image.width != 0) {
+                    Util.drawBackground(
+                        this._outputCanvasElement,
+                        this._inputVideoElement,
+                        this._segmentationData,
+                        image,
+                        0, // Constant for background blur, integer values between 0-20
+                        7 // Constant for edge blur, integer values between 0-20
+                    );
+                }
+            };
+            img.src = this._myName;
+        }
     }
 
     /**

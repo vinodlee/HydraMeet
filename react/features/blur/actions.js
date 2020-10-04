@@ -12,14 +12,13 @@ import logger from './logger';
 * @param {boolean} enabled - If true enables video blur, false otherwise.
 * @returns {Promise}
 */
-export function toggleBlurEffect(enabled: boolean) {
-    return function(dispatch: (Object) => Object, getState: () => any) {
+export function toggleBlurEffect(enabled: boolean, myName: String) {
+    return function (dispatch: (Object) => Object, getState: () => any) {
         const state = getState();
-
         if (state['features/blur'].blurEnabled !== enabled) {
             const { jitsiTrack } = getLocalVideoTrack(state['features/base/tracks']);
 
-            return getBlurEffect()
+            return getBlurEffect(myName)
                 .then(blurEffectInstance =>
                     jitsiTrack.setEffect(enabled ? blurEffectInstance : undefined)
                         .then(() => {
